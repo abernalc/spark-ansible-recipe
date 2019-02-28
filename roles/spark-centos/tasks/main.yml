@@ -1,0 +1,137 @@
+---
+- name: Update repositories cache
+  yum:
+    update_cache: yes
+
+- name: Install java 8 
+  yum:
+    name: java
+    state: present
+
+- name: Add spark user
+  user:
+    name: "{{ spark_user }}"
+    create_home: true
+    home: "{{ spark_user_home }}"
+
+- name: Check {{ spark_user_home }} permissions
+  file:
+    path: "{{ spark_user_home  }}"
+    state: directory
+    mode: 0766
+
+- name: Check if the {{ spark_base_path  }} exists
+  file:
+    path: "{{ spark_base_path  }}"
+    state: directory
+
+- name: Untar the {{ spark_package }}
+  unarchive:
+    src: "{{ spark_package }}"
+    dest: "{{ spark_base_path  }}"
+    remote_src: yes
+    extra_opts: [--strip-components=1]
+    owner: "{{ spark_user  }}"
+    group: "{{ spark_user  }}"
+  tags:
+     - untar
+
+- name: Setup spark environment variables
+  blockinfile:
+    path: "{{ bash_file }}"
+    marker: "# {mark} SPARK environment variables"
+    block: |
+          SPARK_HOME={{ spark_base_path }}
+          export PATH=$SPARK_HOME/bin:$PATH
+    state: present
+
+- name: Setup {{ host_file  }}
+  blockinfile:
+    path: "{{ host_file }}"
+    marker: "# {mark} hosts"
+    block: |
+          {{ hostvars['master']['ansible_default_ipv4']['address'] }}  {{ hostvars['master']['ansible_facts']['hostname'] }}
+          {{ hostvars['slave1']['ansible_default_ipv4']['address'] }}  {{ hostvars['slave1']['ansible_facts']['hostname'] }}
+    state: present
+  tags:
+     - hostfile
+
+- name: Create {{ spark_master_service_file }} directory
+  file:
+    path: "{{ spark_master_service_file }}"
+    state: touch
+  when: inventory_hostname == "master"
+
+- name: Populating the {{ spark_master_service_file  }}
+  blockinfile:
+    path: "{{ spark_master_service_file }}"
+    marker: "# {mark} Spark master service file"
+    block: |
+          [Unit]
+          Description=Spark master service
+          After=syslog.target network.target
+
+          [Service]
+          Type=forking
+          ExecStart={{ start_master_script }} -h {{ hostvars[inventory_hostname]['ansible_default_ipv4']['address'] }}
+          ExecStop={{ stop_master_script }}
+          User={{ spark_user }}
+          Group={{ spark_user }}
+          Restart=always
+
+          [Install]
+          WantedBy=multi-user.target
+    state: present
+  when: inventory_hostname == "master"
+
+- name: Make sure spark master service is running
+  systemd:
+    state: started
+    daemon_reload: yes
+    name: spark-master
+  when: inventory_hostname == "master"
+
+- name: Create {{ spark_slave_service_file }} directory
+  file:
+    path: "{{ spark_slave_service_file }}"
+    state: touch
+  when: inventory_hostname != "master"
+
+- name: Populating the {{ spark_slave_service_file  }}
+  blockinfile:
+    path: "{{ spark_slave_service_file }}"
+    marker: "# {mark} Spark slave service file"
+    block: |
+          [Unit]
+          Description=Spark slave service
+          After=syslog.target network.target
+
+          [Service]
+          Type=forking
+          ExecStart={{ start_slave_script }} spark://{{ hostvars['master']['ansible_default_ipv4']['address'] }}:7077 -h {{ hostvars[inventory_hostname]['ansible_default_ipv4']['address'] }}
+          ExecStop={{ stop_slave_script }}
+          User={{ spark_user }}
+          Group={{ spark_user }}
+          Restart=always
+
+          [Install]
+          WantedBy=multi-user.target
+    state: present
+  when: inventory_hostname != "master"
+
+- name: Make sure spark slave service is running
+  systemd:
+    state: started
+    daemon_reload: yes
+    name: spark-slave
+  when: inventory_hostname != "master"
+
+- name: Check master address
+  debug: var=hostvars['master']['ansible_default_ipv4']['address']
+  tags:
+     - check 
+
+- name: Check slave1 address
+  debug: var=hostvars['slave1']['ansible_default_ipv4']['address']
+  tags:
+     - check

@@ -1,0 +1,14 @@
+---
+spark_package: http://www-us.apache.org/dist/spark/spark-2.3.2/spark-2.3.2-bin-hadoop2.7.tgz
+#spark_package: spark-2.3.2-bin-hadoop2.7.tgz
+spark_base_path: /opt/spark/spark
+bash_file: /opt/spark/.bashrc
+host_file: /etc/hosts
+start_master_script: /opt/spark/spark/sbin/start-master.sh
+stop_master_script: /opt/spark/spark/sbin/stop-master.sh
+start_slave_script: /opt/spark/spark/sbin/start-slave.sh
+stop_slave_script: /opt/spark/spark/sbin/stop-slave.sh
+spark_user: spark
+spark_user_home: /opt/spark
+spark_slave_service_file: /etc/systemd/system/spark-slave.service
+spark_master_service_file: /etc/systemd/system/spark-master.service

@@ -1,0 +1,31 @@
+---
+- name: Update repositories cache
+  apt:
+    update_cache: yes
+
+- name: Install java 8 
+  apt:
+    name: openjdk-8-jdk-headless
+    state: present
+
+- name: Check if the {{ spark_base_path  }} exists
+  file:
+    path: "{{ spark_base_path  }}"
+    state: directory
+
+- name: Untar the {{ spark_package }}
+  unarchive:
+    src: "{{ spark_package }}"
+    dest: "{{ spark_base_path  }}"
+    remote_src: yes
+    extra_opts: [--strip-components=1]
+
+- name: Setup spark environment variables
+  blockinfile:
+    path: "{{ bash_file }}"
+    marker: "# {mark} SPARK environment variables"
+    block: |
+          SPARK_HOME={{ spark_base_path }}
+          export PATH=$SPARK_HOME/bin:$PATH
+    state: present
+

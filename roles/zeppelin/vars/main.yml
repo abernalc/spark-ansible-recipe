@@ -1,0 +1,11 @@
+---
+java_home: /usr/lib/jvm/java-1.8.0-openjdk-1.8.0.191.b12-1.el7_6.x86_64
+java_jre: /usr/lib/jvm/java-1.8.0-openjdk-1.8.0.191.b12-1.el7_6.x86_64/jre
+bash_file: /root/.bashrc
+zeppelin_user: spark
+zeppelin_package: http://www-us.apache.org/dist/zeppelin/zeppelin-0.8.0/zeppelin-0.8.0-bin-all.tgz
+zeppelin_base_path: /opt/zeppelin
+zeppelin_user_home: /opt/zeppelin
+zeppelin_service_file: /etc/systemd/system/zeppelin.service
+zeppelin_env_sh: /opt/zeppelin/conf/zeppelin-env.sh
+spark_base_path: /opt/spark/spark

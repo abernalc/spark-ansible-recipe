@@ -1,0 +1,12 @@
+---
+- name: Playbook to install spark
+  hosts: spark-servers
+  remote_user: root
+  gather_facts: yes
+  pre_tasks:
+    - name: 'install python'
+      yum:
+        name: python
+        state: present
+  roles:
+    - spark-centos
