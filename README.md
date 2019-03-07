@@ -12,15 +12,19 @@ In order to follow along with this guide you must have the following
 
 * [DigitalOcean Account](https://www.digitalocean.com/) - The Cloud Provider
 
-```
-Give examples
-```
 
-### Installing
+### 1 Controller
 
-A step by step series of examples that tell you how to get a development env running
+#### 1.1 Create the controller machine
 
-Say what the step will be
+The controller machine is a droplet that contains all the tools needed to install the cluster
+
+Please create a brand new droplet with these features
+
+* [Centos 7.5 x64]
+* [Data Center Region: Frankfurt]
+
+#### 1.2 
 
 ```
 Give the example
