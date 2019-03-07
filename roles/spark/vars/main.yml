@@ -1,5 +1,5 @@
 ---
-spark_package: http://www-us.apache.org/dist/spark/spark-2.3.2/spark-2.3.2-bin-hadoop2.7.tgz
+spark_package: http://www-us.apache.org/dist/spark/spark-2.3.3/spark-2.3.3-bin-hadoop2.7.tgz
 #spark_package: spark-2.3.2-bin-hadoop2.7.tgz
 spark_base_path: /opt/spark/spark
 bash_file: /opt/spark/.bashrc
@@ -12,3 +12,7 @@ spark_user: spark
 spark_user_home: /opt/spark
 spark_slave_service_file: /etc/systemd/system/spark-slave.service
 spark_master_service_file: /etc/systemd/system/spark-master.service
+spark_env_template: /opt/spark/spark/conf/spark-env.sh.template
+spark_env_file: /opt/spark/spark/conf/spark-env.sh
+spark_local_ip: SPARK_LOCAL_IP
+

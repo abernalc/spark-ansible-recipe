@@ -1,6 +1,6 @@
 ---
 - name: Playbook to install spark
-  hosts: spark-servers
+  hosts: spark_servers
   remote_user: root
   gather_facts: yes
   pre_tasks:
