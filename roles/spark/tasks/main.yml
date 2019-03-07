@@ -3,7 +3,7 @@
   yum:
     update_cache: yes
 
-- name: Install java 8 
+- name: Install java 8
   yum:
     name: java
     state: present
@@ -16,18 +16,18 @@
 
 - name: Check {{ spark_user_home }} permissions
   file:
-    path: "{{ spark_user_home  }}"
+    path: "{{ spark_user_home }}"
     state: directory
     mode: 0766
 
-- name: Check if the {{ spark_base_path  }} exists
+- name: Check if the {{ spark_base_path }} exists
   file:
-    path: "{{ spark_base_path  }}"
+    path: "{{ spark_base_path }}"
     state: directory
 
 - name: Untar the {{ spark_package }}
   unarchive:
-    src: "{{ spark_package }}"
+    src: "{{ spark_package}}"
     dest: "{{ spark_base_path  }}"
     remote_src: yes
     extra_opts: [--strip-components=1]
@@ -62,7 +62,7 @@
     state: touch
   when: inventory_hostname == "master"
 
-- name: Populating the {{ spark_master_service_file  }}
+- name: Populating the {{ spark_master_service_file  }}
   blockinfile:
     path: "{{ spark_master_service_file }}"
     marker: "# {mark} Spark master service file"
@@ -97,7 +97,7 @@
     state: touch
   when: inventory_hostname != "master"
 
-- name: Populating the {{ spark_slave_service_file  }}
+- name: Populating the {{ spark_slave_service_file  }}
   blockinfile:
     path: "{{ spark_slave_service_file }}"
     marker: "# {mark} Spark slave service file"
@@ -129,7 +129,7 @@
 - name: Check master address
   debug: var=hostvars['master']['ansible_default_ipv4']['address']
   tags:
-     - check 
+     - check
 
 - name: Check slave1 address
   debug: var=hostvars['slave1']['ansible_default_ipv4']['address']
