@@ -11,6 +11,9 @@ This guide will describe the steps to create the cluster with Ansible
 In order to follow along with this guide you must have the following 
 
 * [DigitalOcean Account](https://www.digitalocean.com/) - The Cloud Provider
+* [Add your ssh public key in Digital Ocean](https://www.digitalocean.com/docs/droplets/how-to/add-ssh-keys/) - SSH
+* [Terminal] - Access to the terminal or command line
+* [ssh] - Access to the ssh command
 
 
 ### 1 Controller
@@ -23,72 +26,35 @@ Please create a brand new droplet with these features
 
 * [Centos 7.5 x64]
 * [Data Center Region: Frankfurt]
+* [Add your ssh key into such droplet]
 
-#### 1.2 
+#### 1.2  Access the controller machine
 
-```
-Give the example
-```
-
-And repeat
+From your machine please execute this command to access the controller machine
 
 ```
-until finished
+ssh root@<new droplet ip>
 ```
 
-End with an example of getting some data out of the system or using it for a little demo
+Please replace <new droplet ip> with the ip from the recently created droplet
 
-## Running the tests
+#### 1.3  Setup the controller
 
-Explain how to run the automated tests for this system
+Once into the controller machine please execute this commands in order to install
 
-### Break down into end to end tests
-
-Explain what these tests test and why
-
-```
-Give an example
-```
-
-### And coding style tests
-
-Explain what these tests test and why
+* git
+* ansible
 
 ```
-Give an example
+yum install git -y
+yum install epel-release -y
+yum install ansible -y
 ```
 
-## Deployment
+#### 1.4  Clone this repository
 
-Add additional notes about how to deploy this on a live system
+Execute this command
 
-## Built With
-
-* [Dropwizard](http://www.dropwizard.io/1.0.2/docs/) - The web framework used
-* [Maven](https://maven.apache.org/) - Dependency Management
-* [ROME](https://rometools.github.io/rome/) - Used to generate RSS Feeds
-
-## Contributing
-
-Please read [CONTRIBUTING.md](https://gist.github.com/PurpleBooth/b24679402957c63ec426) for details on our code of conduct, and the process for submitting pull requests to us.
-
-## Versioning
-
-We use [SemVer](http://semver.org/) for versioning. For the versions available, see the [tags on this repository](https://github.com/your/project/tags). 
-
-## Authors
-
-* **Billie Thompson** - *Initial work* - [PurpleBooth](https://github.com/PurpleBooth)
-
-See also the list of [contributors](https://github.com/your/project/contributors) who participated in this project.
-
-## License
-
-This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md) file for details
-
-## Acknowledgments
-
-* Hat tip to anyone whose code was used
-* Inspiration
-* etc
-
+```
+git clone https://github.com/abernalc/spark-ansible-recipe.git
+```
