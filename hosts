@@ -1,15 +1,8 @@
-
 [spark_slaves]
-159.89.22.80
-159.89.27.237
-159.89.27.244
 
 [spark_masters]
-159.89.23.73
 
 [spark_servers:children]
 spark_slaves
 spark_masters
 
-[zeppelin_server]
-slave1
