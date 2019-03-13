@@ -148,3 +148,15 @@ Execute the following command, within the root folder of the repository
 ```
 ansible-playbook playbooks/spark/install-spark.playbook
 ```
+
+### 4 Access the UI of the Cluster
+
+#### 4.1 Enter with the next URL
+
+Type the next url in the browser
+
+We will use the ip of the machine 1, from the Cluster
+
+```
+http://<machine 1 ip>:8080
+```
