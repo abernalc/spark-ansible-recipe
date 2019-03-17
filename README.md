@@ -160,3 +160,13 @@ We will use the ip of the machine 1, from the Cluster
 ```
 http://<machine 1 ip>:8080
 ```
+
+### 5 Execute the sample file
+
+### 5.1 Get into the master and submit the file to the cluster
+
+Once in the master machine execute this command
+
+```
+./bin/spark-submit --master spark://<master ip>:7077 /opt/spark/carde/spark-infoleg.py /opt/spark/carde/infoleg.txt /opt/spark/carde/topics.txt --topics 10
+```
