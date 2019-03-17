@@ -9,7 +9,6 @@
       - vim
       - java
       - epel-release
-      - python-pip
       - bzip2
       - git
     state: present
@@ -50,10 +49,6 @@
     owner: "{{ spark_user }}"
     group: "{{ spark_user }}"
     recurse: yes
-
-- name: install pexpect
-  pip:
-    name: pexpect
 
 - name: Install anaconda
   become: yes
