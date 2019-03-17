@@ -1,6 +1,6 @@
 ---
-spark_package: http://www-us.apache.org/dist/spark/spark-2.3.3/spark-2.3.3-bin-hadoop2.7.tgz
-#spark_package: spark-2.3.2-bin-hadoop2.7.tgz
+#spark_package: http://www-us.apache.org/dist/spark/spark-2.3.3/spark-2.3.3-bin-hadoop2.7.tgz
+spark_package: https://s3-us-west-2.amazonaws.com/elasticbeanstalk-us-west-2-743858621321/spark-2.3.3-bin-hadoop2.7.tgz
 spark_base_path: /opt/spark/spark
 bash_file: /opt/spark/.bashrc
 host_file: /etc/hosts
@@ -15,4 +15,13 @@ spark_master_service_file: /etc/systemd/system/spark-master.service
 spark_env_template: /opt/spark/spark/conf/spark-env.sh.template
 spark_env_file: /opt/spark/spark/conf/spark-env.sh
 spark_local_ip: SPARK_LOCAL_IP
+anaconda_sh_file: /opt/spark/anaconda.sh
+anaconda_file_external_url: https://s3-us-west-2.amazonaws.com/elasticbeanstalk-us-west-2-743858621321/Anaconda3-5.3.1-Linux-x86_64.sh
+anaconda_home: /opt/spark/anaconda3
+carde_repository: https://github.com/crscardellino/spark-infoleg.git
+carde_repository_local: /opt/spark/carde
+pyspark_python: PYSPARK_PYTHON
+pyspark_python_location: /opt/spark/anaconda3/bin/python
+pyspark_driver_python: PYSPARK_DRIVER_PYTHON
+pyspark_driver_python_location: /opt/spark/anaconda3/bin/python
 

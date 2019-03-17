@@ -3,9 +3,15 @@
   yum:
     update_cache: yes
 
-- name: Install java 8
+- name: Install vim java epel-release python-pip bzip2 git
   yum:
-    name: java
+    name: 
+      - vim
+      - java
+      - epel-release
+      - python-pip
+      - bzip2
+      - git
     state: present
 
 - name: Add spark user
@@ -25,6 +31,35 @@
     path: "{{ spark_base_path }}"
     state: directory
 
+- name: Download carde repository
+  git:
+    repo: "{{ carde_repository }}"
+    dest: "{{ carde_repository_local }}"
+
+- name: Curl the anaconda file
+  get_url:
+    url: "{{ anaconda_file_external_url }}"
+    dest: "{{ anaconda_sh_file }}"
+    owner: "{{ spark_user }}"
+    mode: 0777
+
+- name: Make sure all under the {{ spark_user_home }} is owned by {{ spark_user }}
+  file:
+    path: "{{ spark_user_home }}"
+    state: directory
+    owner: "{{ spark_user }}"
+    group: "{{ spark_user }}"
+    recurse: yes
+
+- name: install pexpect
+  pip:
+    name: pexpect
+
+- name: Install anaconda
+  become: yes
+  become_user: "{{ spark_user }}"
+  command: /bin/bash -c "{{ anaconda_sh_file }} -b" 
+
 - name: Untar the {{ spark_package }}
   unarchive:
     src: "{{ spark_package }}"
@@ -42,7 +77,9 @@
     marker: "# {mark} SPARK environment variables"
     block: |
           SPARK_HOME={{ spark_base_path }}
-          export PATH=$SPARK_HOME/bin:$PATH
+          ANACONDA_HOME={{ anaconda_home }}
+          export PATH=$SPARK_HOME/bin:$ANACONDA_HOME/bin:$PATH
+        
     state: present
 
 - name: create the {{ spark_env_file }} from the template
@@ -61,19 +98,16 @@
           {{ spark_local_ip  }}={{ ansible_default_ipv4.address }}
     state: present
 
-#  To work with hostnames 
-#- name: Setup {{ host_file  }}
-#  blockinfile:
-#    path: "{{ host_file }}"
-#    marker: "# {mark} hosts {{item}}"
-#    block: |
-#          {{ hostvars[item]['ansible_default_ipv4']['address'] }}  {{ hostvars[item]['ansible_facts']['hostname'] }}
-#    state: present
-#  with_items:
-#    - "{{ groups['spark_slaves'] }}"
-#    - "{{ groups['spark_masters'] }}"
-#  tags:
-#     - hostfile
+- name: Setup pyspark environment variables
+  blockinfile:
+    path: "{{ spark_env_file }}"
+    marker: "# {mark} pyspark_python and driver"
+    block: |
+          {{ pyspark_python }}={{ pyspark_python_location }}
+          {{ pyspark_driver_python }}={{ pyspark_driver_python_location }}
+    state: present
+  tags:
+    - pyspark
 
 - name: Create {{ spark_master_service_file }} directory
   file:
@@ -105,10 +139,12 @@
 
 - name: Make sure spark master service is running
   systemd:
-    state: started
+    state: restarted
     daemon_reload: yes
     name: spark-master
   when: "'spark_masters' in group_names"
+  tags:
+    - restart
 
 - name: Create {{ spark_slave_service_file }} directory
   file:
@@ -140,13 +176,9 @@
 
 - name: Make sure spark slave service is running
   systemd:
-    state: started
+    state: restarted
     daemon_reload: yes
     name: spark-slave
   when: "'spark_slaves' in group_names"
-
-# Testing purposes
-#- name: Check slave1 address
-#  debug: var=hostvars['slave1']['ansible_default_ipv4']['address']
-#  tags:
-#     - check
+  tags:
+    - restart
